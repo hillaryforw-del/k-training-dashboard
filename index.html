@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幼兒家居訓練課程儀表板 (K1 - K3)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fcfaf6;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px -5px rgba(245, 158, 11, 0.15), 0 8px 10px -6px rgba(245, 158, 11, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-700 flex flex-col justify-between selection:bg-amber-100 selection:text-amber-800">
+
+    <!-- Header / Banner -->
+    <header class="bg-gradient-to-r from-amber-100 via-orange-50 to-amber-100 border-b border-amber-200/60 py-8 px-4 sm:px-8 shadow-sm">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-center md:text-left">
+                <span class="inline-block bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-2 tracking-wider shadow-sm">
+                    幼兒全方位發展導向
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-black text-amber-900 tracking-tight">
+                    🏡 幼兒家居訓練課程儀表板
+                </h1>
+                <p class="text-slate-600 mt-1 text-sm sm:text-base">
+                    專為 K1 至 K3 幼兒設計的系統化、循序漸進家居訓練指南（含四步互動教學法）
+                </p>
+            </div>
+            <!-- Quick Stats badge -->
+            <div class="flex gap-3 bg-white/80 backdrop-blur border border-amber-200 p-4 rounded-2xl shadow-sm">
+                <div class="text-center px-3 border-r border-amber-100">
+                    <span class="block text-2xl font-black text-amber-600" id="total-count">0</span>
+                    <span class="text-xs text-slate-500 font-medium">總訓練項目</span>
+                </div>
+                <div class="text-center px-3">
+                    <span class="block text-2xl font-black text-orange-600" id="domain-count">6</span>
+                    <span class="text-xs text-slate-500 font-medium">發展範疇</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-8 py-8 w-full flex-grow">
+        
+        <!-- Controls: Search & Level Tabs -->
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 bg-white p-4 sm:p-6 rounded-3xl border border-amber-100 shadow-sm">
+            
+            <!-- Level Tabs -->
+            <div class="flex flex-wrap items-center justify-center gap-2 w-full md:w-auto" id="level-tabs">
+                <button onclick="filterLevel('all')" data-level="all" class="level-btn px-5 py-2.5 rounded-2xl font-bold text-sm transition-all bg-amber-500 text-white shadow-md shadow-amber-500/20">
+                    全部顯示 (All)
+                </button>
+                <button onclick="filterLevel('K1')" data-level="K1" class="level-btn px-5 py-2.5 rounded-2xl font-bold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800">
+                    K1 階段
+                </button>
+                <button onclick="filterLevel('K2')" data-level="K2" class="level-btn px-5 py-2.5 rounded-2xl font-bold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800">
+                    K2 階段
+                </button>
+                <button onclick="filterLevel('K3')" data-level="K3" class="level-btn px-5 py-2.5 rounded-2xl font-bold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800">
+                    K3 階段
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="relative w-full md:w-80">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
+                    🔍
+                </span>
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="搜尋關鍵字（例：半心算、圓形、校服、作息）..." 
+                    class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all">
+            </div>
+        </div>
+
+        <!-- Domain Filter Pills -->
+        <div class="flex flex-wrap items-center gap-2 mb-8" id="domain-filters">
+            <button onclick="filterDomain('all')" data-domain="all" class="domain-btn text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-800 text-white transition-all shadow-sm">
+                全部範疇
+            </button>
+            <button onclick="filterDomain('數學與邏輯')" data-domain="數學與邏輯" class="domain-btn text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800 transition-all">
+                算術與邏輯
+            </button>
+            <button onclick="filterDomain('語文與認字')" data-domain="語文與認字" class="domain-btn text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800 transition-all">
+                語文與認字
+            </button>
+            <button onclick="filterDomain('空間與概念')" data-domain="空間與概念" class="domain-btn text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800 transition-all">
+                空間與概念
+            </button>
+            <button onclick="filterDomain('大小肌肉與繪畫')" data-domain="大小肌肉與繪畫" class="domain-btn text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800 transition-all">
+                大小肌肉與繪畫
+            </button>
+            <button onclick="filterDomain('日常作息與時間')" data-domain="日常作息與時間" class="domain-btn text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800 transition-all">
+                日常作息與時間
+            </button>
+        </div>
+
+        <!-- Curriculum Cards Grid -->
+        <div id="curriculum-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-16">
+            <div class="text-5xl mb-3">📭</div>
+            <h3 class="text-lg font-bold text-slate-700">找不到相關訓練項目</h3>
+            <p class="text-slate-500 text-sm mt-1">請嘗試更換關鍵字或點選其他年級與範疇標籤。</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-amber-100 py-6 text-center text-xs text-slate-400 mt-12">
+        <p>幼兒家居訓練課程儀表板 &copy; 2026 | 啟發潛能，快樂成長 🌟</p>
+    </footer>
+
+    <!-- JavaScript Data and Application Logic -->
+    <script>
+        const curriculumData = [
+            {
+                id: 1,
+                level: "K1",
+                domain: "數學與邏輯",
+                title: "數數 1 至 20",
+                steps: [
+                    "家長準備實物（如積木或水果），先進行順序示範點算，邊點邊讀出 1 到 20 的數字名稱。",
+                    "家長發出指令請幼兒跟隨手指逐一指著物件大聲朗讀數數。",
+                    "家長隨機抽查其中數量（如 12 粒積木），引導幼兒獨立數出正確總數。",
+                    "幼兒能準確完成點算時給予具體讚賞；若數錯，家長帶領重新手口並用點算。"
+                ]
+            },
+            {
+                id: 2,
+                level: "K1",
+                domain: "數學與邏輯",
+                title: "顏色分類（黃色、紅色）",
+                steps: [
+                    "家長準備黃色和紅色的小物件（如積木、車玩具、卡片），先進行示範分類並說明顏色特徵。",
+                    "家長將混合的物件放在桌上，發出指令請幼兒把紅色和黃色物件分開放在兩個籃子裡。",
+                    "家長拿起其中一件物品提問：「呢架車係咩顏色呀？」引導幼兒準確說出「黃色」或「紅色」。",
+                    "幼兒能準確分類及命名時即時給予具體讚賞；若混淆，家長引導重新比對顏色。"
+                ]
+            },
+            {
+                id: 3,
+                level: "K1",
+                domain: "語文與認字",
+                title: "表達性詞彙（「有 / 沒有」）",
+                steps: [
+                    "家長準備實物容器（如空盒與裝有糖果的盒），先進行示範與說明：「呢個盒裡面『有』糖果，呢個吉盒『沒有』糖果。」",
+                    "家長將物品隨機放入或取出，發出指令請幼兒觀察並回答：「入面有定沒有呀？」",
+                    "引導幼兒運用完整的口語表達：「有」或「沒有」來回答家長的提問。",
+                    "幼兒能正確使用詞彙時即時給予具體讚賞；若表達不清，家長溫和帶讀並示範完整句子。"
+                ]
+            },
+            {
+                id: 4,
+                level: "K1",
+                domain: "空間與概念",
+                title: "相對位置（「前 / 後」）",
+                steps: [
+                    "家長利用椅子和小公仔進行實體示範，指著公仔清晰說明：「公仔喺張凳嘅『前面』，依家轉去張凳嘅『後面』。」",
+                    "家長擺放公仔位置，發出指令請幼兒指認：「邊個係前面？邊個係後面？」",
+                    "家長變換位置提問幼兒：「公仔依家去咗邊度呀？」引導幼兒準確說出「前面」或「後面」。",
+                    "幼兒能準確辨認位置時即時給予具體讚賞；若混淆，家長重新帶領進行實物操作體驗。"
+                ]
+            },
+            {
+                id: 5,
+                level: "K1",
+                domain: "大小肌肉與繪畫",
+                title: "認識形狀（圓形）",
+                steps: [
+                    "家長準備圓形圖卡及圓形實物（如波波、碟子），先進行示範用手指沿著邊緣畫一圈：「呢個滑溜溜、無尖角嘅係圓形。」",
+                    "家長將圓形與其他形狀並排，發出指令請幼兒指認：「睇下邊一個係圓形呀？請指俾媽媽睇。」",
+                    "家長拿起圓形實物提問：「呢個係咩形狀呀？」引導幼兒說出「圓形」。",
+                    "幼兒能準確說出圓形時即時給予具體讚賞，並可在日常生活中隨時尋找圓形物件鞏固。"
+                ]
+            },
+            {
+                id: 6,
+                level: "K1",
+                domain: "語文與認字",
+                title: "認讀英文字母大階與小楷（Aa–Dd）",
+                steps: [
+                    "家長準備 Aa 至 Dd 的大細楷字母卡並排展示，清晰示範讀出名稱：「呢個係大階 A，小楷 a……」",
+                    "家長將卡片打亂，發出指令請幼兒指認：「請幫手搵出大階 C 同小楷 c 喺邊度？」",
+                    "家長隨機拿起字母卡提問：「呢張咭上面係咩字母呀？」引導幼兒準確讀出音名。",
+                    "幼兒能準確認讀時即時給予具體讚賞；若混淆（如 b 與 d），家長運用視覺特徵提示協助區分。"
+                ]
+            },
+            {
+                id: 7,
+                level: "K2",
+                domain: "數學與邏輯",
+                title: "說出順序數字中缺失的數字（1至10）",
+                steps: [
+                    "家長準備 1 至 10 數字卡，順序排開並拿走一個數字（如 1、2、[ ]、4），先進行示範：「2 之後係 3，所以呢度爭咗 3！」",
+                    "家長擺放有缺失的序列卡片，發出指令：「請順住讀落去，睇下邊個數字唔見咗？」",
+                    "引導幼兒用手指順著點算，提問：「4 之後係 5，咁中間爭咩數字呀？」引導說出缺失數字。",
+                    "幼兒能準確說出缺失數字時即時給予具體讚賞；若卡住，帶領從頭順數一次。"
+                ]
+            },
+            {
+                id: 8,
+                level: "K2",
+                domain: "數學與邏輯",
+                title: "半心算加法（1至10以內）",
+                steps: [
+                    "家長示範「半心算」（大數記心頭，細數用手指），以「3 加 5」為例：將大數「5」記在心裡，伸出對應「3」的手指。",
+                    "家長一邊示範一邊朗讀口訣：「5 喺心裡面，接住數：6、7、8！」讓幼兒明白不用從 1 重頭數起。",
+                    "家長出題讓幼兒嘗試：「試下計 2 加 4？邊個係大數？將大數記喺心裡，用手指數埋另一個數啦。」",
+                    "引導幼兒數出答案並完整說出結果（「2加4等於6」）；成功時即時給予具體讚賞。"
+                ]
+            },
+            {
+                id: 9,
+                level: "K2",
+                domain: "大小肌肉與繪畫",
+                title: "自行畫出基本形狀（圓形 / 三角形，附點子提示）",
+                steps: [
+                    "家長準備白紙與蠟筆，示範畫圓形與三角形；畫三角形時可在紙上點出三個頂點作為引導提示。",
+                    "家長引導幼兒先用食指在空中或沿著邊緣畫一次，感受圓形轉彎與三角形的轉角停頓。",
+                    "家長提供印有三個引導點的練習紙，發出指令：「請你跟住三個點點，自己畫出一個三角形。」",
+                    "幼兒順著點連線畫出時給予具體讚賞；熟練後可減少提示點挑戰獨立繪畫。"
+                ]
+            },
+            {
+                id: 10,
+                level: "K2",
+                domain: "空間與概念",
+                title: "相反的推論（厚薄 / 曲直 / 光暗）",
+                steps: [
+                    "家長準備對比物件（厚薄書、直線曲線條、手電筒光暗），先進行示範與介紹特徵。",
+                    "家長讓幼兒親手觸摸或觀察，發出指令：「摸下呢兩本書，邊本係厚？邊本係薄？」",
+                    "家長引導幼兒進行相反推論，例如展示厚書後轉向薄書提問：「呢本書厚，咁呢本係咩呀？」引導說出相反詞（薄、曲、暗）。",
+                    "幼兒能準確說出相反詞時即時給予具體讚賞；若混淆，透過實物對比再次帶讀。"
+                ]
+            },
+            {
+                id: 11,
+                level: "K2",
+                domain: "日常作息與時間",
+                title: "時間概念與作息圖卡（早上/中午/晚上）",
+                steps: [
+                    "家長準備生活作息圖卡（早上男孩子換校服、穿校服走入校園；中午幼稚課室吃飯與做功課；晚上吃晚飯與洗澡），先進行示範與講解。",
+                    "家長將作息圖卡打亂放在桌上，發出指令請幼兒配對：「邊張係早上換校服返學？邊張係晚上洗澡？」",
+                    "家長隨機拿起作息圖卡提問：「小朋友喺幼稚園課室入面吃飯，呢個係咩時間呀？」引導說出「中午」。",
+                    "幼兒能準確對應時間與作息時即時給予具體讚賞，並可在日常生活中按真實作息排列卡片。"
+                ]
+            },
+            {
+                id: 12,
+                level: "K2",
+                domain: "數學與邏輯",
+                title: "指出第一、第二的位置",
+                steps: [
+                    "家長準備一組有順序排列的物品或車子玩具，先進行示範並介紹：「排喺最頭呢架就係『第一』，跟住排第二架就係『第二』。」",
+                    "家長將物品順序排列，發出指令請幼兒指認：「請幫我搵出排喺『第一』同『第二』嘅車仔係邊架？」",
+                    "家長隨機改變排列方向提問：「如果由呢邊開始數，邊個排『第一』？邊個排『第二』？」幫助理解序數是相對的。",
+                    "幼兒能準確指出位置時即時給予具體讚賞；若指錯，耐心地重新帶領從頭點算起點。"
+                ]
+            },
+            {
+                id: 13,
+                level: "K3",
+                domain: "語文與認字",
+                title: "認讀與區分大小楷英文字母（Aa–Dd）",
+                steps: [
+                    "家長準備 Aa 至 Dd 大細楷卡片展示，示範大細楷的形體對應與發音。",
+                    "家長將卡片打亂，發出指令請幼兒配對大細楷：「請將細楷 d 同大階 D 擺埋一齊。」",
+                    "家長隨機抽出一張卡片（如小楷 b 或 d）提問：「呢個係咩字母呀？點樣分佢同隔離嗰個？」引導運用口訣或手部描畫區分。",
+                    "幼兒能準確認讀並區分時即時給予具體讚賞；若混淆，透過手指描畫形狀加深記憶。"
+                ]
+            },
+            {
+                id: 14,
+                level: "K3",
+                domain: "數學與邏輯",
+                title: "序列圖形推理與填空",
+                steps: [
+                    "家長準備規律重複的圖形卡（如：圓形、正方形、三角形、圓形、正方形、[ ]），先進行示範觀察規律。",
+                    "家長引導幼兒一起找出循環順序，用手指順著序列點算分析：「排緊咩次序呢？」",
+                    "家長提供選項卡片，發出指令：「請你觀察序列，運用推理諗下空格應該放咩圖形？」",
+                    "引導幼兒將填好後的整個序列由頭到尾讀一次作驗證；正確時給予具體讚賞。"
+                ]
+            },
+            {
+                id: 15,
+                level: "K3",
+                domain: "數學與邏輯",
+                title: "進階半心算與綜合應用",
+                steps: [
+                    "家長引導幼兒進行稍大範圍的加數計算（如 6 加 4 或 7 加 3），強調大數記心頭。",
+                    "家長指導幼兒口述運算過程：「7 喺心裡面，伸出 3 隻手指，接住數：8、9、10！」",
+                    "家長出題進行綜合應用：「小明有 6 粒糖，媽媽再畀 4 粒佢，總共有幾多粒？」",
+                    "幼兒能獨立運用半心算並完整回答時即時給予大力的具體讚賞。"
+                ]
+            }
+        ];
+
+        let currentLevel = 'all';
+        let currentDomain = 'all';
+        let searchQuery = '';
+
+        window.onload = function() {
+            renderCurriculum();
+            updateStats();
+        };
+
+        function filterLevel(level) {
+            currentLevel = level;
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                if(btn.getAttribute('data-level') === level) {
+                    btn.className = "level-btn px-5 py-2.5 rounded-2xl font-bold text-sm transition-all bg-amber-500 text-white shadow-md shadow-amber-500/20";
+                } else {
+                    btn.className = "level-btn px-5 py-2.5 rounded-2xl font-bold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800";
+                }
+            });
+            renderCurriculum();
+        }
+
+        function filterDomain(domain) {
+            currentDomain = domain;
+            document.querySelectorAll('.domain-btn').forEach(btn => {
+                if(btn.getAttribute('data-domain') === domain) {
+                    btn.className = "domain-btn text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-800 text-white transition-all shadow-sm";
+                } else {
+                    btn.className = "domain-btn text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-800 transition-all";
+                }
+            });
+            renderCurriculum();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            renderCurriculum();
+        }
+
+        function updateStats() {
+            document.getElementById('total-count').innerText = curriculumData.length;
+        }
+
+        function renderCurriculum() {
+            const grid = document.getElementById('curriculum-grid');
+            const emptyState = document.getElementById('empty-state');
+            
+            const filtered = curriculumData.filter(item => {
+                const matchesLevel = (currentLevel === 'all' || item.level === currentLevel);
+                const matchesDomain = (currentDomain === 'all' || item.domain === currentDomain);
+                const matchesSearch = searchQuery === '' || 
+                    item.title.toLowerCase().includes(searchQuery) ||
+                    item.level.toLowerCase().includes(searchQuery) ||
+                    item.domain.toLowerCase().includes(searchQuery) ||
+                    item.steps.some(step => step.toLowerCase().includes(searchQuery));
+                
+                return matchesLevel && matchesDomain && matchesSearch;
+            });
+
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(item => {
+                let levelBadgeColor = 'bg-amber-100 text-amber-800 border-amber-200';
+                if(item.level === 'K1') levelBadgeColor = 'bg-sky-100 text-sky-800 border-sky-200';
+                if(item.level === 'K2') levelBadgeColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                if(item.level === 'K3') levelBadgeColor = 'bg-purple-100 text-purple-800 border-purple-200';
+
+                let domainBadgeColor = 'bg-orange-50 text-orange-700';
+
+                let stepsHtml = item.steps.map((step, idx) => `
+                    <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600 bg-amber-50/40 p-2.5 rounded-xl border border-amber-100/50">
+                        <span class="flex-shrink-0 w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs">${idx + 1}</span>
+                        <span class="leading-relaxed">${step}</span>
+                    </li>
+                `).join('');
+
+                let cardHtml = `
+                    <div class="card-hover bg-white border border-amber-200/60 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-3">
+                                <span class="text-xs font-black px-3 py-1 rounded-full border ${levelBadgeColor}">
+                                    ${item.level} 階段
+                                </span>
+                                <span class="text-xs font-medium px-2.5 py-1 rounded-lg ${domainBadgeColor}">
+                                    📂 ${item.domain}
+
