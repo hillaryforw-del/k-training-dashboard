@@ -401,4 +401,25 @@
                                 </span>
                                 <span class="text-xs font-medium px-2.5 py-1 rounded-lg ${domainBadgeColor}">
                                     📂 ${item.domain}
+                                </span>
+                            </div>
+                            <h3 class="text-lg font-black text-slate-800 mb-4 tracking-tight">
+                                ${item.title}
+                            </h3>
+                            <ul class="space-y-2.5 mb-4">
+                                ${stepsHtml}
+                            </ul>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                            <span>💡 循序漸進 4 步法</span>
+                            <span class="font-medium text-amber-600">親子互動訓練</span>
+                        </div>
+                    </div>
+                `;
 
+                grid.innerHTML += cardHtml;
+            });
+        }
+    </script>
+</body>
+</html>
